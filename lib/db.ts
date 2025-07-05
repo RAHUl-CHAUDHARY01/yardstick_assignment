@@ -1,25 +1,28 @@
 import mongoose from "mongoose";
 
-const MONGODB_URI = process.env.MONGODB_URI || "";
-
-if (!MONGODB_URI) {
-  throw new Error("Please define MONGODB_URI in your .env.local");
+if (!process.env.MONGODB_URI) {
+  throw new Error("Invalid/Missing env variable: MONGODB_URI");
 }
 
-let cached = global.mongoose;
+const uri = process.env.MONGODB_URI;
 
-if (!cached) {
-  cached = global.mongoose = { conn: null, promise: null };
-}
+let isConnected = false;
 
-async function dbConnect() {
-  if (cached.conn) return cached.conn;
+const client = {
+  connect: async () => {
+    if (isConnected) return;
 
-  if (!cached.promise) {
-    cached.promise = mongoose.connect(MONGODB_URI).then((conn) => conn);
-  }
-  cached.conn = await cached.promise;
-  return cached.conn;
-}
+    try {
+      await mongoose.connect(uri!, {
+        dbName: "yardstick", // optional, use if your DB name is fixed
+      });
+      isConnected = true;
+      console.log("✅ Mongoose connected");
+    } catch (err) {
+      console.error("❌ Mongoose connection failed:", err);
+      throw err;
+    }
+  },
+};
 
-export default dbConnect;
+export default client;

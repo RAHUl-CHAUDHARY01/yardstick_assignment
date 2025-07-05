@@ -1,20 +1,16 @@
-import { NextRequest, NextResponse } from "next/server";
-import dbConnect from "@/lib/db";
+import client from "@/lib/db";
 import { Budget } from "@/models/Budget";
+import { NextRequest, NextResponse } from "next/server";
 
-// 👇 Instead of manually typing `context`, import RouteHandlerContext type
-import type { NextApiRequest } from "next";
-import type { NextRequestWithParams } from "@/types/next";
-
-// You can safely use this signature:
 export async function PUT(
   req: NextRequest,
-  context: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
-  const id = context.params.id;
+
+  const id = (await params).id;
 
   try {
-    await dbConnect();
+    await client.connect();
     const body = await req.json();
     const { amount } = body;
 
@@ -33,12 +29,12 @@ export async function PUT(
 
 export async function DELETE(
   req: NextRequest,
-  context: { params: { id: string } }
+  { params }: { params: Promise<{id:string}> }
 ) {
-  const id = context.params.id;
+  const {id} = await params;
 
   try {
-    await dbConnect();
+    await client.connect();
     await Budget.findByIdAndDelete(id);
     return NextResponse.json({ message: "Deleted" });
   } catch (err) {

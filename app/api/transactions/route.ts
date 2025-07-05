@@ -1,16 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
-import dbConnect from "@/lib/db";
 import { Transaction } from "@/models/Transaction";
+import client from "@/lib/db";
 
 export async function GET() {
-  await dbConnect();
+  await client.connect();
   const transactions = await Transaction.find().sort({ date: 1 });
   return NextResponse.json({ transactions });
 }
 
 export async function POST(req: NextRequest) {
   try {
-    await dbConnect();
+    await client.connect();
     const body = await req.json();
 
     const { amount, date, category, description } = body;

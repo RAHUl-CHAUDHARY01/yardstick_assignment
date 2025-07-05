@@ -1,14 +1,17 @@
-import dbConnect from "@/lib/db";
+import client from "@/lib/db";
 import { Transaction } from "@/models/Transaction";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function DELETE(_: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req:NextRequest,
+   { params }: { params: Promise<{ id: string }> },
+) {
+  const id = (await params).id;
   try {
-    await dbConnect();
-    await Transaction.findByIdAndDelete(params.id);
+    await client.connect();
+    await Transaction.findByIdAndDelete(id);
     return NextResponse.json({ message: "Deleted" });
   } catch (err) {
-    console.log(err);
+    console.error(err);
     return NextResponse.json({ error: "Error deleting" }, { status: 500 });
   }
 }

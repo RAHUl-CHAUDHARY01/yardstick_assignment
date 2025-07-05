@@ -1,16 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
-import dbConnect from "@/lib/db";
 import { Budget } from "@/models/Budget";
+import client from "@/lib/db";
 
 export async function GET() {
-  await dbConnect();
+  await client.connect();
   const budgets = await Budget.find();
   return NextResponse.json({ budgets });
 }
 
 export async function POST(req: NextRequest) {
   try {
-    await dbConnect();
+    await client.connect();
     const body = await req.json();
 
     const { category, amount } = body;
