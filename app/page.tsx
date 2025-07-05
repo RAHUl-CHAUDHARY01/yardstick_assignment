@@ -130,7 +130,7 @@ export default function DashboardPage() {
 
   const handleAddTransaction = async () => {
     if (!form.amount || !form.date || !form.category) {
-      toast({ title: "All fields are required.", variant: "destructive" });
+      toast("All fields are required.");
       return;
     }
     try {
@@ -138,11 +138,11 @@ export default function DashboardPage() {
         ...form,
         amount: parseFloat(form.amount),
       });
-      toast({ title: "Transaction added!" });
+      toast("Transaction added!");
       setForm({ amount: "", description: "", date: "", category: "" });
       fetchData();
     } catch {
-      toast({ title: "Failed to add transaction", variant: "destructive" });
+      toast("Failed to add transaction");
     }
   };
 
@@ -286,7 +286,7 @@ export default function DashboardPage() {
               const handleSave = async () => {
                 const amountStr = budgetInputs[category];
                 if (!amountStr) {
-                  toast({ title: "Please enter amount", variant: "destructive" });
+                  toast("Please enter amount");
                   return;
                 }
 
@@ -301,10 +301,10 @@ export default function DashboardPage() {
                   } else {
                     await axios.post("/api/budgets", payload);
                   }
-                  toast({ title: `Budget saved for ${category}` });
+                  toast(`Budget saved for ${category}`);
                   fetchData();
                 } catch {
-                  toast({ title: "Failed to save budget", variant: "destructive" });
+                  toast("Failed to save budget");
                 }
               };
 

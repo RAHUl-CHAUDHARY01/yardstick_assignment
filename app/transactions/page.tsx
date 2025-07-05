@@ -35,14 +35,11 @@ export default function TransactionsPage() {
   const handleDelete = async (id: string) => {
     try {
       await axios.delete(`/api/transactions/${id}`);
-      toast({ title: "Transaction deleted" });
+      toast("Transaction deleted");
       fetchTransactions();
     } catch (err) {
-      toast({
-        title: "Error",
-        description: "Could not delete transaction",
-        variant: "destructive",
-      });
+        console.log(err);
+      toast("Could not delete transaction");
     }
   };
 
